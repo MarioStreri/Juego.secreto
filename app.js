@@ -1,4 +1,3 @@
-
 let numeroSecreto = 0;
 let intentos = 0;
 let arrNumerosSorteados = [];
@@ -12,12 +11,31 @@ function asignarTextoElementos (elemento , texto){
 
 //para darle funcionalidad al boton de intentar en el juego
 function verificarIntento(){
-    //captura lo que se escribio por el usuario
-    let numeroDeUsuario = parseInt(document.getElementById( "valorUsuario" ).value);
+     // Captura lo que se escribió por el usuario
+     let valorInput = document.getElementById("valorUsuario").value.trim(); // Elimina espacios en blanco al inicio y al final
+     // Convertir el valor a número
+     let numeroDeUsuario = parseInt(valorInput);
+     // Obtener el elemento <p> del mensaje de error
+     let mensajeError = document.querySelector('.texto__parrafo');
+     // Verificar si el número ingresado está dentro del rango permitido o si el input está vacío
+     if (valorInput === "" || numeroDeUsuario < 1 || numeroDeUsuario > numeroMaximo || isNaN(numeroDeUsuario)) {
+         // Mostrar mensaje de error correspondiente
+         if (valorInput === "") {
+             asignarTextoElementos('p.texto__parrafo', "Por favor, ingresa un número.");
+         } else {
+             asignarTextoElementos('p.texto__parrafo', `Por favor, ingresa un número dentro del rango de 1 a ${numeroMaximo}.`);
+         }
+         mensajeError.classList.add('error-message');
+         limpiarInput();
+         return;
+    }
+    // Si el número ingresado está dentro del rango, eliminar la clase de error
+    mensajeError.classList.remove('error-message');
      
     if(numeroSecreto === numeroDeUsuario){
         asignarTextoElementos('p',`Acertaste el número en ${intentos} ${intentos === 1? 'vez' : 'veces'}`)
         document.getElementById('reiniciar').removeAttribute('disabled');
+        document.getElementById('intento').setAttribute( 'disabled', 'true' );
     }else{
         if(numeroSecreto  > numeroDeUsuario){
             asignarTextoElementos('p', 'El número secreto es mayor');
@@ -27,7 +45,7 @@ function verificarIntento(){
         intentos++;
         limpiarInput();
     }
-
+     
 }
 
 //resetea las condiciones y mensajes iniciales del juego 
@@ -48,7 +66,7 @@ function reiniciarJuego(){
     condicionesIniciales();
     //deshabilitar el boton de nuevo juego
     document.getElementById('reiniciar').setAttribute('disabled','true');
-
+    document.getElementById('intento').removeAttribute('disabled');
 }
 
 //limpia el input cuando el numero no es el correcto.
